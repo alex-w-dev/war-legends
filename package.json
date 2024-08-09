@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "dev": "concurrently -n api,client \"npm run start:dev --prefix ./apps/api\" \"npm run dev --prefix ./apps/client\"",
+    "build": "concurrently -n api,client \"npm run build --prefix ./apps/api\" \"npm run build --prefix ./apps/client\"",
+    "start": "npm run start:prod --prefix ./apps/api"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
