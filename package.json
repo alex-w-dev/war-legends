@@ -1,7 +1,8 @@
 {
+  "name": "war-legends",
   "scripts": {
-    "dev": "concurrently -n api,client \"npm run start:dev --prefix ./apps/api\" \"npm run dev --prefix ./apps/client\"",
-    "build": "concurrently -n api,client \"npm run build --prefix ./apps/api\" \"npm run build --prefix ./apps/client\"",
+    "dev": "concurrently -n rts-kit,api,client \"npm run dev --prefix ./packages/rts-kit\" \"npm run start:dev --prefix ./apps/api\" \"npm run dev --prefix ./apps/client\"",
+    "build": "concurrently -n rts-kit,api,client \"npm run build --prefix ./packages/rts-kit\" \"npm run build --prefix ./apps/api\" \"npm run build --prefix ./apps/client\"",
     "start": "npm run start:prod --prefix ./apps/api"
   },
   "workspaces": [
