@@ -6,7 +6,8 @@
     "start": "npm run start:prod --prefix ./apps/api"
   },
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "devDependencies": {
     "concurrently": "^8.2.2"
