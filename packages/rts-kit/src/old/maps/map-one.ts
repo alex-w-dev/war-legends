@@ -1,4 +1,4 @@
-import { WarriorConfig } from "../classes/extended/game-config.interface";
+import { WarriorConfig } from '../classes/extended/game-config.interface';
 
 export type IMap = {
   name: string;

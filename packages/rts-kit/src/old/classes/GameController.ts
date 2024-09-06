@@ -1,13 +1,17 @@
-import { Subject } from "rxjs";
-import * as PIXI from "pixi.js";
-import { Warrior } from "./army/warriors/warrior";
-import { throttleTime } from "rxjs/operators";
-import { ARENA_HEIGHT, ARENA_WIDTH } from "../constants";
-import { BarrackConfig, IGameConfig, WarriorConfig } from "./extended/game-config.interface";
-import { defaultGameConfig } from "./extended/default-game-config";
-import { BarrackId, WarriorId } from "./extended/ids";
-import { Battle } from "./Battle";
-import { MapBattle } from "./MapBattle";
+import { Subject } from 'rxjs';
+import * as PIXI from 'pixi.js';
+import { Warrior } from './army/warriors/warrior';
+import { throttleTime } from 'rxjs/operators';
+import { ARENA_HEIGHT, ARENA_WIDTH } from '../constants';
+import {
+  BarrackConfig,
+  IGameConfig,
+  WarriorConfig,
+} from './extended/game-config.interface';
+import { defaultGameConfig } from './extended/default-game-config';
+import { BarrackId, WarriorId } from './extended/ids';
+import { Battle } from './Battle';
+import { MapBattle } from './MapBattle';
 
 export class GameController {
   static arenaWith = ARENA_WIDTH;
@@ -30,7 +34,7 @@ export class GameController {
 
   static async init(ticker = new PIXI.Ticker()) {
     ticker.maxFPS = GameController.fps;
-    ticker.add((delta) => {
+    ticker.add(delta => {
       if (delta.deltaTime < 4) {
         this.ticksCountWithoutLags++;
       } else {
@@ -56,7 +60,7 @@ export class GameController {
             config: GameController.getWarriorConfigById(WarriorId.FireWorm),
           },
         ],
-        name: "das",
+        name: 'das',
       },
     });
     this.currentBattle.init();

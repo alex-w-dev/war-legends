@@ -1,13 +1,13 @@
-import { getAngleBetweenDots, isGameObjectsCollided } from "../utils/utils";
-import { GameController } from "./GameController";
-import { BehaviorSubject } from "rxjs";
-import { v4 as uuidv4 } from "uuid";
-import { componentDestroyed } from "../utils/component-destroyed";
-import { takeUntil } from "rxjs/operators";
-import { GameObjectConfig } from "./extended/game-config.interface";
-import { Battle } from "./Battle";
-import { EventMe } from "./utils/event-host/event-me.decorator";
-import { EventName } from "./utils/event-host/event-name.enum";
+import { getAngleBetweenDots, isGameObjectsCollided } from '../utils/utils';
+import { GameController } from './GameController';
+import { BehaviorSubject } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
+import { componentDestroyed } from '../utils/component-destroyed';
+import { takeUntil } from 'rxjs/operators';
+import { GameObjectConfig } from './extended/game-config.interface';
+import { Battle } from './Battle';
+import { EventMe } from './utils/event-host/event-me.decorator';
+import { EventName } from './utils/event-host/event-name.enum';
 
 export interface IGameObjectParams {
   x: number;
@@ -36,7 +36,7 @@ export class GameObject {
   constructor(
     public battle: Battle,
     public config: GameObjectConfig,
-    params: IGameObjectParams
+    params: IGameObjectParams,
   ) {
     this.x.next(params.x || 0);
     this.y.next(params.y || 0);
@@ -45,11 +45,9 @@ export class GameObject {
   }
 
   init(): void {
-    GameController.ticker$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((delta) => {
-        this.update(delta);
-      });
+    GameController.ticker$.pipe(takeUntil(this.destroyed$)).subscribe(delta => {
+      this.update(delta);
+    });
   }
 
   destroy() {
@@ -58,7 +56,7 @@ export class GameObject {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   update(delta: number) {
-    throw new Error("Not implemented onUpdate");
+    throw new Error('Not implemented onUpdate');
   }
 
   stepTo(x: number, y: number, delta: number) {
@@ -104,7 +102,7 @@ export class GameObject {
 
   isCollidedWith(target: GameObject): boolean {
     if (this._destroyed || target._destroyed) {
-      console.error("Cannot give collide for destroyed GameObjects");
+      console.error('Cannot give collide for destroyed GameObjects');
       return false;
     }
 

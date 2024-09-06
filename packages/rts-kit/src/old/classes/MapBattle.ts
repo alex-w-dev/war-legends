@@ -1,6 +1,6 @@
-import { IMap } from "../maps/map-one";
-import { Warrior } from "./army/warriors/warrior";
-import { Battle } from "./Battle";
+import { IMap } from '../maps/map-one';
+import { Warrior } from './army/warriors/warrior';
+import { Battle } from './Battle';
 
 export class MapBattle extends Battle {
   constructor(public params: { map: IMap }) {
@@ -10,7 +10,7 @@ export class MapBattle extends Battle {
   init(): void {
     super.init();
 
-    this.params.map.warriros.forEach((warrior) => {
+    this.params.map.warriros.forEach(warrior => {
       this.registerWarrior(
         new Warrior(this, warrior.config, {
           clan: warrior.clan,

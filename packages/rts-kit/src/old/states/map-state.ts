@@ -1,5 +1,5 @@
-import { computed, makeObservable, observable } from "mobx";
-import { GameObject } from "../classes/GameObject";
+import { computed, makeObservable, observable } from 'mobx';
+import { GameObject } from '../classes/GameObject';
 
 export enum MapStateType {
   WARRIOR,

@@ -1,4 +1,4 @@
-import { ReplaySubject } from "rxjs";
+import { ReplaySubject } from 'rxjs';
 
 type Component = { destroy(...args: any[]): void; _destroyed: boolean };
 

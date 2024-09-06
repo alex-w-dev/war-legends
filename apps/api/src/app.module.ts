@@ -5,7 +5,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
-  imports: [ServeStaticModule.forRoot({rootPath: join(__dirname, '../..', 'client', 'dist')})],
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../..', 'client', 'dist'),
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

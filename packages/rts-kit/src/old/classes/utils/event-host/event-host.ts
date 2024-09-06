@@ -8,7 +8,7 @@ export class EventHost {
   }
 
   public dispatch(eventName: string, data: any) {
-    this.listeners[eventName].forEach((listener) => {
+    this.listeners[eventName].forEach(listener => {
       listener(data);
     });
   }
@@ -30,7 +30,9 @@ export class EventHost {
   }
 
   public off(eventName: string, listener: Listener) {
-    this.listeners[eventName] = this.listeners[eventName].filter((l) => l !== listener);
+    this.listeners[eventName] = this.listeners[eventName].filter(
+      l => l !== listener,
+    );
   }
 
   public once(eventName: string, listener: Listener) {

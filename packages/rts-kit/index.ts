@@ -1,1 +1,1 @@
-export { MyClass } from "./src/my-class";
+export { MyClass } from './src/my-class';

@@ -1,10 +1,10 @@
-import { Warrior } from "./army/warriors/warrior";
-import { BattleGround } from "./BattleGround";
-import { GRID_DIMENSION_SIZE, GRID_HEIGHT, GRID_WIDTH } from "../constants";
-import { Bullet } from "./bullets/bullet";
-import { BehaviorSubject } from "rxjs";
-import { Spell } from "./spells/spell";
-import { EventHost } from "./utils/event-host/event-host";
+import { Warrior } from './army/warriors/warrior';
+import { BattleGround } from './BattleGround';
+import { GRID_DIMENSION_SIZE, GRID_HEIGHT, GRID_WIDTH } from '../constants';
+import { Bullet } from './bullets/bullet';
+import { BehaviorSubject } from 'rxjs';
+import { Spell } from './spells/spell';
+import { EventHost } from './utils/event-host/event-host';
 
 export class Battle {
   allWarriors = new BehaviorSubject([] as Warrior[]);
@@ -17,7 +17,10 @@ export class Battle {
   eventHost: EventHost;
 
   constructor(gridWidth = GRID_WIDTH, gridHeight = GRID_HEIGHT) {
-    this.battleGround = new BattleGround(gridWidth * GRID_DIMENSION_SIZE, gridHeight * GRID_DIMENSION_SIZE);
+    this.battleGround = new BattleGround(
+      gridWidth * GRID_DIMENSION_SIZE,
+      gridHeight * GRID_DIMENSION_SIZE,
+    );
     this.eventHost = new EventHost();
   }
 
@@ -32,9 +35,9 @@ export class Battle {
   }
 
   destroy(): void {
-    this.allWarriors.value.forEach((one) => one.destroy());
-    this.allBullets.value.forEach((one) => one.destroy());
-    this.allSpells.value.forEach((one) => one.destroy());
+    this.allWarriors.value.forEach(one => one.destroy());
+    this.allBullets.value.forEach(one => one.destroy());
+    this.allSpells.value.forEach(one => one.destroy());
     this.allWarriors.complete();
     this.allBullets.complete();
     this.allSpells.complete();
@@ -46,7 +49,7 @@ export class Battle {
 
     const subscription = warrior.destroyed$.subscribe(() => {
       subscription.unsubscribe();
-      this.allWarriors.next(this.allWarriors.value.filter((w) => w !== warrior));
+      this.allWarriors.next(this.allWarriors.value.filter(w => w !== warrior));
     });
   }
 
@@ -55,7 +58,7 @@ export class Battle {
     this.allBullets.next([...this.allBullets.value, bullet]);
     const subscription = bullet.destroyed$.subscribe(() => {
       subscription.unsubscribe();
-      this.allBullets.next(this.allBullets.value.filter((b) => b !== bullet));
+      this.allBullets.next(this.allBullets.value.filter(b => b !== bullet));
     });
   }
 
@@ -64,7 +67,7 @@ export class Battle {
     this.allSpells.next([...this.allSpells.value, spell]);
     const subscription = spell.destroyed$.subscribe(() => {
       subscription.unsubscribe();
-      this.allSpells.next(this.allSpells.value.filter((s) => s !== spell));
+      this.allSpells.next(this.allSpells.value.filter(s => s !== spell));
     });
   }
 }

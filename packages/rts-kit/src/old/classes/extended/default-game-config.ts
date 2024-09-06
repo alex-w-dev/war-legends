@@ -1,6 +1,13 @@
-import { BarrackId, BulletId, CastingId, SpellId, WarriorId } from "./ids";
-import { ArmorType, AttackType, BulletType, CastingType, SpellType, WarriorType } from "../../constants";
-import { IGameConfig } from "./game-config.interface";
+import { BarrackId, BulletId, CastingId, SpellId, WarriorId } from './ids';
+import {
+  ArmorType,
+  AttackType,
+  BulletType,
+  CastingType,
+  SpellType,
+  WarriorType,
+} from '../../constants';
+import { IGameConfig } from './game-config.interface';
 
 export const defaultGameConfig: IGameConfig = {
   warriors: [

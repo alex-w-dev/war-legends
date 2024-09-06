@@ -6,9 +6,9 @@ export class MyClass {
       // https://nodejs.org/api/esm.html - раздел "Differences between ES modules and CommonJS"
       const dir = __dirname;
       console.log(dir);
-      return "CommonJS 2";
+      return 'CommonJS 2';
     } catch (e) {
-      return "ESModule 2";
+      return 'ESModule 2';
     }
   }
 }

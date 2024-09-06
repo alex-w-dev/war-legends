@@ -1,5 +1,12 @@
-import { ArmorType, AttackType, BulletType, CastingType, SpellType, WarriorType } from "../../constants";
-import { BarrackId, WarriorId } from "./ids";
+import {
+  ArmorType,
+  AttackType,
+  BulletType,
+  CastingType,
+  SpellType,
+  WarriorType,
+} from '../../constants';
+import { BarrackId, WarriorId } from './ids';
 
 export type GameObjectConfig = {
   id: string;

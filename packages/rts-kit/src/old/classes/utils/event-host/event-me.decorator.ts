@@ -1,5 +1,5 @@
-import { EventName } from "./event-name.enum";
-import { Battle } from "../../Battle";
+import { EventName } from './event-name.enum';
+import { Battle } from '../../Battle';
 
 export function EventMe(eventType: EventName) {
   return function (target: { battle: Battle }, propertyKey: string) {

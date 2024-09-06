@@ -1,6 +1,6 @@
-import { Grid } from "pathfinding";
-import { Warrior } from "./army/warriors/warrior";
-import { GRID_DIMENSION_SIZE } from "../constants";
+import { Grid } from 'pathfinding';
+import { Warrior } from './army/warriors/warrior';
+import { GRID_DIMENSION_SIZE } from '../constants';
 
 export class BattleGround {
   warriorGridWidth: number;

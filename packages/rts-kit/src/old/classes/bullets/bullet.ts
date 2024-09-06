@@ -1,9 +1,9 @@
-import { GameObject, IGameObjectParams } from "../GameObject";
-import { Warrior } from "../army/warriors/warrior";
-import { BulletState } from "../../constants";
-import { BehaviorSubject } from "rxjs";
-import { BulletConfig } from "../extended/game-config.interface";
-import { Battle } from "../Battle";
+import { GameObject, IGameObjectParams } from '../GameObject';
+import { Warrior } from '../army/warriors/warrior';
+import { BulletState } from '../../constants';
+import { BehaviorSubject } from 'rxjs';
+import { BulletConfig } from '../extended/game-config.interface';
+import { Battle } from '../Battle';
 
 export interface IBulletParams extends IGameObjectParams {
   attacker: Warrior;
@@ -16,7 +16,11 @@ export class Bullet extends GameObject {
   target: Warrior;
   attacker: Warrior;
 
-  constructor(public battle: Battle, public config: BulletConfig, params: IBulletParams) {
+  constructor(
+    public battle: Battle,
+    public config: BulletConfig,
+    params: IBulletParams,
+  ) {
     super(battle, config, params);
 
     this.target = params.target;

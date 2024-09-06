@@ -1,15 +1,15 @@
-import { Warrior } from "../army/warriors/warrior";
-import { GameController } from "../GameController";
-import { Destroyable } from "../Destroyable";
-import { takeUntil } from "rxjs";
-import { WARRIOR_MOVE_GRID_OFFSET, WarriorState } from "../../constants";
+import { Warrior } from '../army/warriors/warrior';
+import { GameController } from '../GameController';
+import { Destroyable } from '../Destroyable';
+import { takeUntil } from 'rxjs';
+import { WARRIOR_MOVE_GRID_OFFSET, WarriorState } from '../../constants';
 
 const UPDATE_PATH_DELTA = 10;
 
 export class MoveToPointTask extends Destroyable {
   thenCallBack?: Function;
   lastUpdatePathDelta: number = 0;
-  pathsToPoint: ReturnType<Warrior["getPathToPoint"]>;
+  pathsToPoint: ReturnType<Warrior['getPathToPoint']>;
 
   constructor(
     public warrior: Warrior,
@@ -19,7 +19,9 @@ export class MoveToPointTask extends Destroyable {
     super();
 
     this.pathsToPoint = warrior.getPathToPoint(x, y);
-    GameController.ticker$.pipe(takeUntil(this.destroyed$)).subscribe(this.update);
+    GameController.ticker$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(this.update);
   }
 
   destroy() {

@@ -1,4 +1,4 @@
-import { cloneDeep } from "lodash";
+import { cloneDeep } from 'lodash';
 
 function scale1D(arr: number[] | number[][], n: number) {
   for (let i = (arr.length *= n); i; ) arr[--i] = arr[(i / n) | 0];

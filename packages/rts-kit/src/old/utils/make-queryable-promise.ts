@@ -4,7 +4,9 @@ export type IQueryablePromise<T> = Promise<T> & {
   isRejected(): boolean;
 };
 
-export function makeQueryablePromise<T>(promise: Promise<T>): IQueryablePromise<T> {
+export function makeQueryablePromise<T>(
+  promise: Promise<T>,
+): IQueryablePromise<T> {
   // Don't modify any promise that has been already modified.
   if (!!(promise as IQueryablePromise<T>).isFulfilled) {
     return promise as IQueryablePromise<T>;
@@ -26,12 +28,12 @@ export function makeQueryablePromise<T>(promise: Promise<T>): IQueryablePromise<
         isRejected = true;
         isPending = false;
         throw e;
-      }
+      },
     ),
     {
       isFulfilled: () => isFulfilled,
       isPending: () => isPending,
       isRejected: () => isRejected,
-    }
+    },
   );
 }

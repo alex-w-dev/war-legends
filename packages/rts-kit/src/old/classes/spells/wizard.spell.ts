@@ -1,5 +1,5 @@
-import { Spell } from "./spell";
-import { AttackType } from "../../constants";
+import { Spell } from './spell';
+import { AttackType } from '../../constants';
 
 export class WizardSpell extends Spell {
   doSpell() {

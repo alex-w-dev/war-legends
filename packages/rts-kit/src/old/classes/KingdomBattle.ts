@@ -1,12 +1,19 @@
-import { Warrior } from "./army/warriors/warrior";
-import { Kingdom } from "./Kingdom";
-import { BattleGround } from "./BattleGround";
-import { GameController } from "./GameController";
-import { AttackType, GRID_DIMENSION_SIZE, GRID_HEIGHT, GRID_WIDTH, WarriorState, WAVE_INTERVAL_MS } from "../constants";
-import { Bullet } from "./bullets/bullet";
-import { BehaviorSubject, Subscription } from "rxjs";
-import { Spell } from "./spells/spell";
-import { Battle } from "./Battle";
+import { Warrior } from './army/warriors/warrior';
+import { Kingdom } from './Kingdom';
+import { BattleGround } from './BattleGround';
+import { GameController } from './GameController';
+import {
+  AttackType,
+  GRID_DIMENSION_SIZE,
+  GRID_HEIGHT,
+  GRID_WIDTH,
+  WarriorState,
+  WAVE_INTERVAL_MS,
+} from '../constants';
+import { Bullet } from './bullets/bullet';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { Spell } from './spells/spell';
+import { Battle } from './Battle';
 
 export class KingdomBattle extends Battle {
   allWarriors = new BehaviorSubject([] as Warrior[]);
@@ -14,7 +21,10 @@ export class KingdomBattle extends Battle {
   allSpells = new BehaviorSubject([] as Spell[]);
   allKingdoms: Kingdom[];
 
-  battleGround: BattleGround = new BattleGround(GRID_WIDTH * GRID_DIMENSION_SIZE, GRID_HEIGHT * GRID_DIMENSION_SIZE);
+  battleGround: BattleGround = new BattleGround(
+    GRID_WIDTH * GRID_DIMENSION_SIZE,
+    GRID_HEIGHT * GRID_DIMENSION_SIZE,
+  );
 
   private timeForNextWave: number = Math.round(WAVE_INTERVAL_MS);
 
@@ -38,18 +48,20 @@ export class KingdomBattle extends Battle {
 
   private startRound(): void {
     this.lastWaveTime = GameController.now - WAVE_INTERVAL_MS;
-    this.gameTickerSubsctiprion = GameController.tickerHalfOfSecond$.subscribe(() => {
-      this.timeForNextWave = this.getTimeForNextWave();
+    this.gameTickerSubsctiprion = GameController.tickerHalfOfSecond$.subscribe(
+      () => {
+        this.timeForNextWave = this.getTimeForNextWave();
 
-      if (this.timeForNextWave === 0) {
-        this.runNextWave();
-      }
-    });
-    this.allKingdoms.forEach((kingdom) => {
+        if (this.timeForNextWave === 0) {
+          this.runNextWave();
+        }
+      },
+    );
+    this.allKingdoms.forEach(kingdom => {
       const castle = kingdom.getCastle();
 
       this.castleStateSubscriptions.push(
-        castle.state.subscribe((s) => {
+        castle.state.subscribe(s => {
           if (s === WarriorState.DYING) {
             this.clearRound();
             setTimeout(() => {
@@ -57,7 +69,7 @@ export class KingdomBattle extends Battle {
               this.startRound();
             });
           }
-        })
+        }),
       );
 
       this.registerWarrior(castle);
@@ -66,14 +78,21 @@ export class KingdomBattle extends Battle {
 
   private clearRound(): void {
     this.gameTickerSubsctiprion?.unsubscribe();
-    this.castleStateSubscriptions.forEach((subscribtion) => subscribtion.unsubscribe());
-    this.allWarriors.value.forEach((warrior) => {
+    this.castleStateSubscriptions.forEach(subscribtion =>
+      subscribtion.unsubscribe(),
+    );
+    this.allWarriors.value.forEach(warrior => {
       warrior.takeDamage(Infinity, AttackType.Magic);
     });
   }
 
   private getTimeForNextWave(): number {
-    return Math.max(0, Math.round((WAVE_INTERVAL_MS + this.lastWaveTime - GameController.now) / 1000));
+    return Math.max(
+      0,
+      Math.round(
+        (WAVE_INTERVAL_MS + this.lastWaveTime - GameController.now) / 1000,
+      ),
+    );
   }
 
   private runNextWave(): void {
@@ -82,8 +101,8 @@ export class KingdomBattle extends Battle {
   }
 
   private addWaveWarriors = () => {
-    this.allKingdoms.forEach((kingdom) => {
-      kingdom.getWaveWarriors().forEach((warrior) => {
+    this.allKingdoms.forEach(kingdom => {
+      kingdom.getWaveWarriors().forEach(warrior => {
         this.registerWarrior(warrior);
       });
     });
@@ -92,11 +111,13 @@ export class KingdomBattle extends Battle {
   registerWarrior(warrior: Warrior): void {
     super.registerWarrior(warrior);
 
-    const subscription2 = warrior.state.subscribe((state) => {
+    const subscription2 = warrior.state.subscribe(state => {
       if (state === WarriorState.DYING) {
         this.allKingdoms
-          .filter((k) => k.clan !== warrior.clan)
-          .forEach((k) => k.$gold.next(k.$gold.value + Math.round(warrior.getBounty())));
+          .filter(k => k.clan !== warrior.clan)
+          .forEach(k =>
+            k.$gold.next(k.$gold.value + Math.round(warrior.getBounty())),
+          );
       }
     });
 

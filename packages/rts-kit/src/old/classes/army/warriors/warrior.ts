@@ -1,12 +1,15 @@
-import { GameController } from "../../GameController";
-import { WarriorAttackProcess } from "../warrior-attack-process";
-import { GameObject } from "../../GameObject";
-import { Bullet } from "../../bullets/bullet";
-import pd from "pathfinding";
-import Pathfinding, { DiagonalMovement, Grid, Util } from "pathfinding";
-import { IQueryablePromise, makeQueryablePromise } from "../../../utils/make-queryable-promise";
-import { sleep } from "../../../utils/sleep";
-import { fromGridToReal, fromRealToGrid } from "../../../utils/utils";
+import { GameController } from '../../GameController';
+import { WarriorAttackProcess } from '../warrior-attack-process';
+import { GameObject } from '../../GameObject';
+import { Bullet } from '../../bullets/bullet';
+import pd from 'pathfinding';
+import Pathfinding, { DiagonalMovement, Grid, Util } from 'pathfinding';
+import {
+  IQueryablePromise,
+  makeQueryablePromise,
+} from '../../../utils/make-queryable-promise';
+import { sleep } from '../../../utils/sleep';
+import { fromGridToReal, fromRealToGrid } from '../../../utils/utils';
 import {
   ArmorType,
   ATTACK_TO_ARMOR_INDEX,
@@ -16,18 +19,22 @@ import {
   WARRIOR_MOVE_GRID_OFFSET,
   WarriorState,
   WarriorType,
-} from "../../../constants";
-import { NewWarriorParams } from "../../../interfaces";
-import { random } from "lodash";
-import { BehaviorSubject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { getDistanceBetweenObjects } from "../../../utils/get-distance-between-objects";
-import { BulletConfig, CastingConfig, WarriorConfig } from "../../extended/game-config.interface";
-import { wizardSpellFactory } from "../../spell-factories/wizard.spell-factory";
-import { Spell } from "../../spells/spell";
-import { Battle } from "../../Battle";
-import { MoveToPointTask } from "../../tasks/move-to-point.task";
-import { Destroyable } from "../../Destroyable";
+} from '../../../constants';
+import { NewWarriorParams } from '../../../interfaces';
+import { random } from 'lodash';
+import { BehaviorSubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { getDistanceBetweenObjects } from '../../../utils/get-distance-between-objects';
+import {
+  BulletConfig,
+  CastingConfig,
+  WarriorConfig,
+} from '../../extended/game-config.interface';
+import { wizardSpellFactory } from '../../spell-factories/wizard.spell-factory';
+import { Spell } from '../../spells/spell';
+import { Battle } from '../../Battle';
+import { MoveToPointTask } from '../../tasks/move-to-point.task';
+import { Destroyable } from '../../Destroyable';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const biBestFirstFinder = new pd.BiBestFirstFinder({
@@ -78,9 +85,14 @@ export class Warrior extends GameObject {
 
   private targetFollowingCount = 0;
   private stunProcess?: WarriorAttackProcess;
-  private spellRollbackProcesses = new Map<CastingConfig, WarriorAttackProcess>();
+  private spellRollbackProcesses = new Map<
+    CastingConfig,
+    WarriorAttackProcess
+  >();
 
-  private currentTask: IQueryablePromise<void> = makeQueryablePromise(Promise.resolve());
+  private currentTask: IQueryablePromise<void> = makeQueryablePromise(
+    Promise.resolve(),
+  );
 
   private newCurrentTask?: Destroyable;
 
@@ -129,7 +141,10 @@ export class Warrior extends GameObject {
     if (freeGridNode) {
       this.setState(WarriorState.IDLE);
       if (this.gridX !== freeGridNode.x || this.gridY !== freeGridNode.y) {
-        this.setPosition(fromGridToReal(freeGridNode.x), fromGridToReal(freeGridNode.y));
+        this.setPosition(
+          fromGridToReal(freeGridNode.x),
+          fromGridToReal(freeGridNode.y),
+        );
       }
       this.addToGrid(freeGridNode.x, freeGridNode.y);
     } else {
@@ -146,7 +161,10 @@ export class Warrior extends GameObject {
   }
 
   isDead(): boolean {
-    return this.state.value === WarriorState.DYING || this.state.value === WarriorState.INIT;
+    return (
+      this.state.value === WarriorState.DYING ||
+      this.state.value === WarriorState.INIT
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -168,7 +186,11 @@ export class Warrior extends GameObject {
   }
 
   getNewTask(): IQueryablePromise<void> {
-    if (this.isStunned() || (this.target && this.target.isDead()) || this.targetFollowingCount === 3) {
+    if (
+      this.isStunned() ||
+      (this.target && this.target.isDead()) ||
+      this.targetFollowingCount === 3
+    ) {
       this.target = null;
     }
 
@@ -179,10 +201,15 @@ export class Warrior extends GameObject {
     if (this.castingConfigs) {
       for (const castingConfig of this.castingConfigs) {
         if (this.canCastSpell(castingConfig)) {
-          const spellTarget = wizardSpellFactory.getSpellTarget(this, castingConfig);
+          const spellTarget = wizardSpellFactory.getSpellTarget(
+            this,
+            castingConfig,
+          );
 
           if (spellTarget) {
-            return makeQueryablePromise(this.getSpellOnTargetTask(spellTarget, castingConfig));
+            return makeQueryablePromise(
+              this.getSpellOnTargetTask(spellTarget, castingConfig),
+            );
           }
         }
       }
@@ -203,7 +230,10 @@ export class Warrior extends GameObject {
       if (this.canAttackTarget(this.target)) {
         return makeQueryablePromise(this.getAttackTargetTask(this.target));
       } else {
-        if (this.getTargetVisibility(this.target, VISIBLE_RANGE_FOR_ATTACK).isVisible) {
+        if (
+          this.getTargetVisibility(this.target, VISIBLE_RANGE_FOR_ATTACK)
+            .isVisible
+        ) {
           return makeQueryablePromise(this.getMoveToTargetTask(this.target));
         } else {
           this.target = null;
@@ -212,13 +242,15 @@ export class Warrior extends GameObject {
     }
 
     // go to center
-    return makeQueryablePromise(this.getMoveToPointTask(this.enemyKingdomX, this.enemyKingdomY));
+    return makeQueryablePromise(
+      this.getMoveToPointTask(this.enemyKingdomX, this.enemyKingdomY),
+    );
   }
 
   getAttackTargetTask(target: Warrior): Promise<void> {
     this.lookTo(target.x.value, target.y.value);
 
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(resolve => {
       this.currentAttackProcess = new WarriorAttackProcess({
         target,
         attackTime: this.attackTime,
@@ -241,10 +273,13 @@ export class Warrior extends GameObject {
     }
   }
 
-  getSpellOnTargetTask(target: Warrior, castingConfig: CastingConfig): Promise<void> {
+  getSpellOnTargetTask(
+    target: Warrior,
+    castingConfig: CastingConfig,
+  ): Promise<void> {
     this.lookTo(target.x.value, target.y.value);
 
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(resolve => {
       this.currentCastingProcess = new WarriorAttackProcess({
         target,
         attackTime: castingConfig.timing.completeAction,
@@ -267,7 +302,10 @@ export class Warrior extends GameObject {
     return this.getMoveToPointTask(target.x.value, target.y.value);
   }
 
-  getPathToPoint(x: number, y: number): { x: number; y: number; gridX: number; gridY: number }[] {
+  getPathToPoint(
+    x: number,
+    y: number,
+  ): { x: number; y: number; gridX: number; gridY: number }[] {
     const pointGridX = fromRealToGrid(x);
     const pointGridY = fromRealToGrid(y);
 
@@ -279,7 +317,7 @@ export class Warrior extends GameObject {
       this.battle.battleGround.warriorGrid.getNodeAt(this.gridX, this.gridY),
       DiagonalMovement.Always,
     );
-    if (neighbors.every((n) => !n.walkable)) {
+    if (neighbors.every(n => !n.walkable)) {
       return [];
     }
 
@@ -287,9 +325,9 @@ export class Warrior extends GameObject {
       ? this.getClosestPath(pointGridX, pointGridY)
       : this.getFakeClosesPath(pointGridX, pointGridY);
     const myGridPositionPoint = path[0];
-    const pathWithoutMyPoint = path.filter((p) => p !== myGridPositionPoint);
+    const pathWithoutMyPoint = path.filter(p => p !== myGridPositionPoint);
 
-    return pathWithoutMyPoint.map((p) => ({
+    return pathWithoutMyPoint.map(p => ({
       x: fromGridToReal(p[0]),
       y: fromGridToReal(p[1]),
       gridX: p[0],
@@ -323,8 +361,14 @@ export class Warrior extends GameObject {
         // make target walkable (and offset too)
         // TODO if offset near border of grid - can be BUGS
         clonedGrid.setWalkableAt(
-          Math.max(0, Math.min(gridX + x, this.battle.battleGround.warriorGridMaxX)),
-          Math.max(0, Math.min(gridY + y, this.battle.battleGround.warriorGridMaxY)),
+          Math.max(
+            0,
+            Math.min(gridX + x, this.battle.battleGround.warriorGridMaxX),
+          ),
+          Math.max(
+            0,
+            Math.min(gridY + y, this.battle.battleGround.warriorGridMaxY),
+          ),
           true,
         );
       }
@@ -334,16 +378,35 @@ export class Warrior extends GameObject {
     let path;
 
     try {
-      path = biAStarFinder.findPath(this.gridX, this.gridY, gridX, gridY, clonedGrid.clone());
+      path = biAStarFinder.findPath(
+        this.gridX,
+        this.gridY,
+        gridX,
+        gridY,
+        clonedGrid.clone(),
+      );
     } catch (e) {
-      console.log(this.gridX, this.gridY, gridX, gridY, "this.gridX, this.gridY, gridX, gridY");
+      console.log(
+        this.gridX,
+        this.gridY,
+        gridX,
+        gridY,
+        'this.gridX, this.gridY, gridX, gridY',
+      );
       throw e;
     }
 
     if (path.length) {
       // remove unavailable cells from path
-      for (let i = 1 /*ignore 0, because it is self point*/; i < path.length; i++) {
-        const isWalkable = this.battle.battleGround.warriorGrid.isWalkableAt(path[i][0], path[i][1]);
+      for (
+        let i = 1 /*ignore 0, because it is self point*/;
+        i < path.length;
+        i++
+      ) {
+        const isWalkable = this.battle.battleGround.warriorGrid.isWalkableAt(
+          path[i][0],
+          path[i][1],
+        );
 
         if (!isWalkable) {
           return path.slice(0, i);
@@ -375,7 +438,10 @@ export class Warrior extends GameObject {
 
     this.lookTo(x, y);
 
-    if (++GameController.currentPathFindingCount > GameController.defaultPathFindingLimit) {
+    if (
+      ++GameController.currentPathFindingCount >
+      GameController.defaultPathFindingLimit
+    ) {
       this.setState(WarriorState.IDLE);
       return sleep(random(400, 800));
     }
@@ -386,28 +452,43 @@ export class Warrior extends GameObject {
 
     if (thisTaskTargetPosition) {
       this.removeFromGrid();
-      this.addToGrid(thisTaskTargetPosition.gridX, thisTaskTargetPosition.gridY);
+      this.addToGrid(
+        thisTaskTargetPosition.gridX,
+        thisTaskTargetPosition.gridY,
+      );
 
       this.setState(WarriorState.MOVEMENT);
 
-      return new Promise<void>((resolve) => {
-        const subscription = GameController.ticker$.pipe(takeUntil(this.destroyed$)).subscribe((delta) => {
-          if (this.isDead() || this.isStunned()) {
-            return resolve();
-          }
+      return new Promise<void>(resolve => {
+        const subscription = GameController.ticker$
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(delta => {
+            if (this.isDead() || this.isStunned()) {
+              return resolve();
+            }
 
-          this.stepTo(thisTaskTargetPosition.x, thisTaskTargetPosition.y, delta);
+            this.stepTo(
+              thisTaskTargetPosition.x,
+              thisTaskTargetPosition.y,
+              delta,
+            );
 
-          if (
-            Math.abs(this.x.value - thisTaskTargetPosition.x) < WARRIOR_MOVE_GRID_OFFSET &&
-            Math.abs(this.y.value - thisTaskTargetPosition.y) < WARRIOR_MOVE_GRID_OFFSET
-          ) {
-            resolve();
-            subscription.unsubscribe();
-          }
-        });
+            if (
+              Math.abs(this.x.value - thisTaskTargetPosition.x) <
+                WARRIOR_MOVE_GRID_OFFSET &&
+              Math.abs(this.y.value - thisTaskTargetPosition.y) <
+                WARRIOR_MOVE_GRID_OFFSET
+            ) {
+              resolve();
+              subscription.unsubscribe();
+            }
+          });
 
-        this.stepTo(thisTaskTargetPosition.x, thisTaskTargetPosition.y, GameController.currentTickDelta);
+        this.stepTo(
+          thisTaskTargetPosition.x,
+          thisTaskTargetPosition.y,
+          GameController.currentTickDelta,
+        );
       });
     } else {
       this.setState(WarriorState.IDLE);
@@ -425,14 +506,17 @@ export class Warrior extends GameObject {
     };
 
     this.battle.allWarriors.value
-      .filter((warrior) => {
+      .filter(warrior => {
         return (
           !warrior.isDead() && // cannot attack dead warriors
           warrior.clan !== this.clan // not my clan (also , i'm not here)
         );
       })
-      .forEach((warrior) => {
-        const warriorVisibility = this.getTargetVisibility(warrior, VISIBLE_RANGE_FOR_ATTACK);
+      .forEach(warrior => {
+        const warriorVisibility = this.getTargetVisibility(
+          warrior,
+          VISIBLE_RANGE_FOR_ATTACK,
+        );
         const nearest = enemyNearData.distance > warriorVisibility.distance;
 
         if (warriorVisibility.isVisible && nearest) {
@@ -446,7 +530,10 @@ export class Warrior extends GameObject {
     return enemyNearData?.warrior;
   }
 
-  getTargetVisibility(target: Warrior, visibleRange: number): { distance: number; isVisible: boolean } {
+  getTargetVisibility(
+    target: Warrior,
+    visibleRange: number,
+  ): { distance: number; isVisible: boolean } {
     const distance = getDistanceBetweenObjects(this, target);
 
     return {
@@ -489,7 +576,7 @@ export class Warrior extends GameObject {
     }
 
     if (this.health.value === 0) {
-      throw new Error("Something went wrong with health");
+      throw new Error('Something went wrong with health');
     }
 
     const attackIndex = ATTACK_TO_ARMOR_INDEX[attackType][this.armorType];
@@ -499,7 +586,12 @@ export class Warrior extends GameObject {
         0,
         Math.min(
           this.health.value,
-          this.health.value - Math.ceil(attack * (1 - (this.armor * 0.06) / (1 + this.armor * 0.06)) * attackIndex),
+          this.health.value -
+            Math.ceil(
+              attack *
+                (1 - (this.armor * 0.06) / (1 + this.armor * 0.06)) *
+                attackIndex,
+            ),
         ),
       ),
     );
@@ -510,7 +602,12 @@ export class Warrior extends GameObject {
   }
 
   kickTarget(target: Warrior): void {
-    if (!this.target || this.isDead() || this.isStunned() || this.target !== target) {
+    if (
+      !this.target ||
+      this.isDead() ||
+      this.isStunned() ||
+      this.target !== target
+    ) {
       return;
     }
 
@@ -534,33 +631,44 @@ export class Warrior extends GameObject {
 
     if (this.config.splash) {
       const warriorsNear = this.battle.allWarriors.value.filter(
-        (w) =>
+        w =>
           w.clan === target.clan &&
           getDistanceBetweenObjects(target, w) <= this.config.splash!.radius &&
           w !== this.target,
       );
 
-      warriorsNear.forEach((w) => {
+      warriorsNear.forEach(w => {
         w.takeDamage(attack * this.config.splash!.factor, this.attackType);
       });
     }
 
     if (this.config.spellsOnDamage && !target.config.magicResistance) {
       this.config.spellsOnDamage
-        .filter((spellOnDamage) => Math.random() < spellOnDamage.chance)
-        .forEach((spellOnDamage) => {
-          this.battle.registerSpell(new Spell(spellOnDamage.spell, this, target));
+        .filter(spellOnDamage => Math.random() < spellOnDamage.chance)
+        .forEach(spellOnDamage => {
+          this.battle.registerSpell(
+            new Spell(spellOnDamage.spell, this, target),
+          );
         });
     }
   }
 
   spellOnTarget(target: Warrior, castingConfig: CastingConfig): void {
-    if (this.isDead() || this.isStunned() || target.isDead() || !this.canCastSpell(castingConfig)) {
+    if (
+      this.isDead() ||
+      this.isStunned() ||
+      target.isDead() ||
+      !this.canCastSpell(castingConfig)
+    ) {
       return;
     }
 
     if (this.castingConfigs) {
-      const spellsOrBullet = wizardSpellFactory.getSpells(this, castingConfig, target);
+      const spellsOrBullet = wizardSpellFactory.getSpells(
+        this,
+        castingConfig,
+        target,
+      );
 
       this.spellRollbackProcesses.set(
         castingConfig,
@@ -574,7 +682,7 @@ export class Warrior extends GameObject {
       );
 
       if (Array.isArray(spellsOrBullet)) {
-        spellsOrBullet.forEach((spell) => this.battle.registerSpell(spell));
+        spellsOrBullet.forEach(spell => this.battle.registerSpell(spell));
       } else {
         this.battle.registerBullet(spellsOrBullet);
       }
@@ -593,7 +701,11 @@ export class Warrior extends GameObject {
   }
 
   removeFromGrid(): void {
-    this.battle.battleGround.warriorGrid.setWalkableAt(this.gridX, this.gridY, true);
+    this.battle.battleGround.warriorGrid.setWalkableAt(
+      this.gridX,
+      this.gridY,
+      true,
+    );
   }
 
   addToGrid(gridX: number, gridY: number): void {
@@ -619,7 +731,7 @@ export class Warrior extends GameObject {
     this.removeFromGrid();
 
     let i = 0;
-    GameController.ticker$.pipe(takeUntil(this.destroyed$)).subscribe((delta) => {
+    GameController.ticker$.pipe(takeUntil(this.destroyed$)).subscribe(delta => {
       i += delta;
 
       i += GameController.fpsIndex * delta;
@@ -644,7 +756,10 @@ export class Warrior extends GameObject {
             continue;
           }
 
-          const node = this.battle.battleGround.warriorGrid.getNodeAt(gridX + j, gridY + k);
+          const node = this.battle.battleGround.warriorGrid.getNodeAt(
+            gridX + j,
+            gridY + k,
+          );
           if (node.walkable) {
             walkableNode = node;
             i = k = j = 100;

@@ -1,6 +1,6 @@
-import { Warrior } from "./warriors/warrior";
-import { GameController } from "../GameController";
-import { Subscription } from "rxjs";
+import { Warrior } from './warriors/warrior';
+import { GameController } from '../GameController';
+import { Subscription } from 'rxjs';
 
 export interface WarriorAttackProcessParams {
   target: Warrior;
@@ -19,13 +19,19 @@ export class WarriorAttackProcess {
     this.attackPreDamageTimes = Array.isArray(this.params.attackPreDamageTime)
       ? this.params.attackPreDamageTime
       : this.params.attackPreDamageTime
-      ? [this.params.attackPreDamageTime]
-      : [];
+        ? [this.params.attackPreDamageTime]
+        : [];
 
-    if (this.attackPreDamageTimes.some((attackPreDamageTime) => attackPreDamageTime > this.params.attackTime)) {
-      throw new Error("attackPreDamageTime cannot be large than attackTime");
+    if (
+      this.attackPreDamageTimes.some(
+        attackPreDamageTime => attackPreDamageTime > this.params.attackTime,
+      )
+    ) {
+      throw new Error('attackPreDamageTime cannot be large than attackTime');
     }
-    this.subscription = GameController.ticker$.subscribe((delta) => this.update(delta));
+    this.subscription = GameController.ticker$.subscribe(delta =>
+      this.update(delta),
+    );
   }
 
   getTimeLeft(): number {
@@ -45,12 +51,16 @@ export class WarriorAttackProcess {
     }
 
     this.time += GameController.fpsIndex * delta;
-    const needToDamageTimes = this.attackPreDamageTimes.filter((time) => time <= this.time);
+    const needToDamageTimes = this.attackPreDamageTimes.filter(
+      time => time <= this.time,
+    );
     if (needToDamageTimes.length) {
       for (const needToDamageTime of needToDamageTimes) {
         this.onDamage();
       }
-      this.attackPreDamageTimes = this.attackPreDamageTimes.filter((time) => time > this.time);
+      this.attackPreDamageTimes = this.attackPreDamageTimes.filter(
+        time => time > this.time,
+      );
     }
 
     if (this.time > this.params.attackTime) {
